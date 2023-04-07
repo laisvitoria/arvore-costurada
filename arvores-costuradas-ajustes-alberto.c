@@ -34,41 +34,7 @@ typedef struct estrutura {
     struct estrutura *costura; // campo para a costura
 } ARVORE_BINARIA;
 
-ARVORE_BINARIA* encontraPredecessor(ARVORE_BINARIA *no) {
-    if (no == NULL) {
-        return NULL;
-    }
-    if (no->esq != NULL) {
-        no = no->esq;
-        while (no->dir != NULL) {
-            no = no->dir;
-        }
-        return no;
-    } else {
-        while (no->costura != NULL && no->costura->dir != no) {
-            no = no->costura;
-        }
-        return no->costura;
-    }
-}
 
-ARVORE_BINARIA* encontraSucessor(ARVORE_BINARIA *no) {
-    if (no == NULL) {
-        return NULL;
-    }
-    if (no->dir != NULL) {
-        no = no->dir;
-        while (no->esq != NULL) {
-            no = no->esq;
-        }
-        return no;
-    } else {
-        while (no->costura != NULL && no->costura->esq != no) {
-            no = no->costura;
-        }
-        return no->costura;
-    }
-}
 
 ARVORE_BINARIA* criarNo(ITEM item) {
     ARVORE_BINARIA *novo = (ARVORE_BINARIA*) malloc(sizeof(ARVORE_BINARIA));
