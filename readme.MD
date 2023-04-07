@@ -82,3 +82,5 @@ Falar as diferenças do código antigo para o código novo (ocupar espaço)
 # Sobre como funciona as costuras:
 
 Agora temos apenas um espaço referente a costura, que costura cada nó. a referênncia "costura" na estrutura de dados é equivalente a linha pontilhada na imagem que tá no wpp
+
+Essas estruturas de dados definem uma árvore binária com costura (threaded binary tree). A estrutura ITEM representa o elemento a ser armazenado na árvore binária. A estrutura ARVORE_BINARIA é a própria árvore binária, composta por um ITEM e três ponteiros: esq, dir e costura. Os ponteiros esq e dir apontam para os filhos esquerdo e direito do nó, enquanto que o ponteiro costura é usado para realizar a costura da árvore binária, permitindo percorrer a árvore de forma mais eficiente. A costura consiste em ligar um nó a seu sucessor (ou predecessor) na ordem de percorrimento da árvore, formando uma espécie de lista encadeada a partir da árvore.
