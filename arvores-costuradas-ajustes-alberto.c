@@ -278,7 +278,7 @@ int main() {
     buscarPreOrdem(raiz, itemBuscado);
     itemBuscado.chave = 8;
     buscarPreOrdem(raiz, itemBuscado);
-
+.
     destruirArvore(raiz);
     return 0;
 }
