@@ -193,6 +193,42 @@ void destruirArvore(ARVORE_BINARIA *raiz) {
     }
     free(raiz);
 }
+//////////////////////////////////////////////// COMPILAR /////////////////////////////////
+ARVORE_BINARIA *busca(TIPOCHAVE ch, ARVORE_BINARIA *raiz) {
+    if (raiz == NULL || raiz->item.chave == ch) {
+        return raiz;
+    }
+    if (ch < raiz->item.chave) {
+        return busca(ch, raiz->esq);
+    }
+    return busca(ch, raiz->dir);
+}
+//realiza uma busca normar e retorna a chave se achou
+ARVORE_BINARIA *alterar_item(TIPOCHAVE ch, ITEM novo_item, ARVORE_BINARIA *raiz) {
+    ARVORE_BINARIA *no = busca(ch, raiz);
+    if (no != NULL) {
+        no->item = novo_item;
+    }
+    return raiz;
+}
+// altera o item de acordo com o resultado da busca
+ARVORE_BINARIA *reorganizar_costura(ARVORE_BINARIA *raiz) {
+    ARVORE_BINARIA *p = raiz;
+    while (p != NULL) {
+        if (p->esq != NULL) {
+            ARVORE_BINARIA *q = p->esq;
+            while (q->dir != NULL) {
+                q = q->dir;
+            }
+            q->costura = p;
+        }
+        p = p->dir;
+    }
+    return raiz;
+}
+// reorganiza as costuras da arvore para não ficar nada desorganizado
+
+
 
 int main() {
     ARVORE_BINARIA *raiz = NULL;
@@ -206,7 +242,8 @@ int main() {
         item.chave = numeros[i];
         inserirPreOrdem(&raiz, item);
     }
-
+    ITEM item7 = { 14 };
+    ITEM novo_item = { 5 };
     percorrerPreOrdem(raiz);
     printf("\n");
     itemBuscado.chave = 1;
