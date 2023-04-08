@@ -136,7 +136,37 @@ void inserirOrdenado(ARVORE_COSTURADA **raiz, ITEM item) {
     }
 }
 
+void alterar_item(ARVORE_COSTURADA *raiz, TIPOCHAVE chave, ITEM novo_item) {
+    ARVORE_COSTURADA *no_atual = raiz;
+    while (no_atual != NULL) {
+        if (chave == no_atual->item.chave) {
+            no_atual->item = novo_item;
+            return;
+        } else if (chave < no_atual->item.chave) {
+            if (no_atual->bitEsq == 0) {
+                printf("Chave não encontrada na árvore.\n");
+                return;
+            }
+            no_atual = no_atual->esq;
+        } else {
+            if (no_atual->bitDir == 0) {
+                printf("Chave não encontrada na árvore.\n");
+                return;
+            }
+            no_atual = no_atual->dir;
+        }
+    }
+}
+/*
+A função começa definindo um ponteiro para a raiz da árvore costurada e um ponteiro para o nó atual, que começa apontando para a raiz. 
+Em seguida, um loop while é usado para percorrer a árvore até que a chave fornecida seja encontrada ou até que se chegue a um nó folha.
 
+Dentro do loop, o código verifica se a chave fornecida é igual à chave do nó atual. Se for, o valor do item é atualizado com o novo item 
+fornecido e a função retorna. Se a chave fornecida for menor que a chave do nó atual, o código verifica se há um filho esquerdo usando o bitEsq. 
+Se houver, o ponteiro para o nó atual é atualizado para apontar para o filho esquerdo. Se não houver um filho esquerdo, a função imprime uma 
+mensagem de erro e retorna. Se a chave fornecida for maior que a chave do nó atual, o código segue uma lógica semelhante para encontrar o filho direito.
+Se a chave fornecida não for encontrada na árvore, a função imprime uma mensagem de erro e retorna.
+*/
 void buscarPosOrdem(ARVORE_COSTURADA *raiz) {
     if (raiz != NULL) {
         buscarPosOrdem(raiz->esq);
@@ -366,6 +396,13 @@ int main (){
 
     printf("Buscar Arvore Pos-ordem");
     buscarPosOrdem(raiz);
+    
+    ITEM novoItem = {25};
+    raiz = alterar_item(raiz, 20, novoItem);
+    
+    printf("Arvore em ordem: ");
+    imprimir(raiz);
+    printf("\n");
 
 return 0;
 }
