@@ -91,6 +91,52 @@ ARVORE_COSTURADA *buscar_no(ARVORE_COSTURADA *raiz, TIPOCHAVE chave) {
     return NULL;
 }
 
+void inserirOrdenado(ARVORE_COSTURADA **raiz, ITEM item) {
+    ARVORE_COSTURADA *novoNo = (ARVORE_COSTURADA *) malloc(sizeof(ARVORE_COSTURADA));
+    novoNo->item = item;
+    novoNo->esq = NULL;
+    novoNo->dir = NULL;
+    novoNo->pai = NULL;
+
+    if (*raiz == NULL) {
+        *raiz = novoNo;
+        novoNo->pai = *raiz;
+        novoNo->esq = NULL;
+        novoNo->dir = NULL;
+    } else {
+        ARVORE_COSTURADA *atual = *raiz;
+        ARVORE_COSTURADA *anterior = NULL;
+
+        while (atual != NULL) {
+            anterior = atual;
+            if (item.chave < atual->item.chave) {
+                if (atual->esq == NULL) {
+                    atual->esq = novoNo;
+                    novoNo->pai = atual;
+                    novoNo->esq = anterior;
+                    novoNo->dir = atual;
+                    atual->pai = anterior->pai == atual ? novoNo : anterior->pai;
+                    break;
+                } else {
+                    atual = atual->esq;
+                }
+            } else {
+                if (atual->dir == NULL) {
+                    atual->dir = novoNo;
+                    novoNo->pai = atual;
+                    novoNo->dir = anterior;
+                    novoNo->esq = atual;
+                    anterior->pai = atual->pai == anterior ? novoNo : atual->pai;
+                    break;
+                } else {
+                    atual = atual->dir;
+                }
+            }
+        }
+    }
+}
+
+
 void buscarPosOrdem(ARVORE_COSTURADA *raiz) {
     if (raiz != NULL) {
         buscarPosOrdem(raiz->esq);
@@ -270,9 +316,47 @@ int main (){
     } else {
         printf("No nao encontrado\n");
     }
+    free (no);
     printf("Arvore em ordem: ");
     imprimir(raiz);
     printf("\n");
+
+    printf("Buscar Arvore Em-ordem");
+    buscarEmOrdem(raiz);
+
+     printf("Buscar Arvore Pre-ordem");
+    buscarPreOrdem(raiz);
+
+    printf("Buscar Arvore Pos-ordem");
+    buscarPosOrdem(raiz);
+
+    ARVORE_COSTURADA *no = remover(raiz, 70);
+    free (no);
+    ARVORE_COSTURADA *no = remover(raiz, 90);
+    free (no);
+    ARVORE_COSTURADA *no = remover(raiz, 60);
+    free (no);
+    ARVORE_COSTURADA *no = remover(raiz, 50);
+    free (no);
+    ARVORE_COSTURADA *no = remover(raiz, 30);
+    free (no);
+    ARVORE_COSTURADA *no = remover(raiz, 40);
+    free (no);
+    ARVORE_COSTURADA *no = remover(raiz, 20);
+    free (no);
+    ARVORE_COSTURADA *no = remover(raiz, 10);
+    free (no);
+
+
+    raiz = inserirOrdenado(*raiz, 10);
+    raiz = inserirOrdenado(*raiz, 20);
+    raiz = inserirOrdenado(*raiz, 40);
+    raiz = inserirOrdenado(*raiz, 30);
+    raiz = inserirOrdenado(*raiz, 50);
+    raiz = inserirOrdenado(*raiz, 60);
+    raiz = inserirOrdenado(*raiz, 90);
+    raiz = inserirOrdenado(*raiz, 70);
+    raiz = inserirOrdenado(*raiz, 80);
 
     printf("Buscar Arvore Em-ordem");
     buscarEmOrdem(raiz);
