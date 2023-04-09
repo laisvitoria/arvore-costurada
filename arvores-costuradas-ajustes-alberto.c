@@ -286,8 +286,55 @@ ARVORE_BINARIA *reorganizar_costura(ARVORE_BINARIA *raiz) {
 }
 // reorganiza as costuras da arvore para não ficar nada desorganizado
 
+void alterar_e_reordenar(ARVORE_BINARIA *raiz, TIPOCHAVE chave_antiga, TIPOCHAVE chave_nova) {
+    // Busca o nó a ser alterado
+    ARVORE_BINARIA *no = buscaAuxiliarAlterar(raiz, chave_antiga);
+    if (no == NULL) {
+        printf("Nó não encontrado\n");
+        return;
+    }
 
+    // Altera a chave do nó
+    no->item.chave = chave_nova;
 
+    // Reordena o nó na árvore costurada
+    ARVORE_BINARIA *anterior = NULL;
+    ARVORE_BINARIA *atual = raiz;
+    while (atual != NULL) {
+        if (atual->item.chave > no->item.chave) {
+            // Desce para a esquerda
+            anterior = atual;
+            atual = atual->esq;
+        } else if (atual->costura == NULL || atual->costura->item.chave > no->item.chave) {
+            // Insere o nó à direita do atual
+            no->dir = atual->dir;
+            no->costura = atual->costura;
+            atual->dir = no;
+            atual->costura = no;
+            return;
+        } else {
+            // Segue pela costura
+            anterior = atual;
+            atual = atual->costura;
+        }
+    }
+
+    // Caso o nó seja inserido à direita da raiz
+    no->dir = NULL;
+    no->costura = raiz->costura;
+    raiz->costura = no;
+}
+/*
+Recebe como parâmetros a raiz da árvore, a chave antiga do nó a ser alterado e a nova chave.
+Utiliza a função buscaAuxiliarAlterar para encontrar o nó a ser alterado. Caso não encontre, exibe uma mensagem de erro e retorna.
+Altera a chave do nó para a nova chave recebida como parâmetro.
+Começa a busca pelo novo local do nó a partir da raiz da árvore.
+Enquanto não chegar ao final da árvore (atual = NULL), realiza a busca:
+Se a chave do nó atual for maior que a nova chave, desce para a esquerda.
+Se a chave do nó atual for menor que a nova chave e o nó seguinte na costura também for menor que a nova chave, segue pela costura.
+Caso contrário, encontra o local onde o nó deve ser inserido. Insere o nó à direita do nó atual, e atualiza as costuras.
+Se o nó não foi inserido antes disso, significa que ele deve ser inserido à direita da raiz. Atualiza a costura da raiz para apontar para o novo nó.
+*/
 int main() {
     ARVORE_BINARIA *raiz = NULL;
 
