@@ -153,4 +153,42 @@ ARVORE_COSTURADA *alterarItem(ARVORE_COSTURADA *raiz, TIPOCHAVE chave, ITEM novo
     // Chave não encontrada, não faz nada
     return raiz;
 }
+void imprimir(ARVORE_COSTURADA *raiz) {
+    if (raiz == NULL) {
+        return;
+    }
+
+    ARVORE_COSTURADA *atual = raiz;
+
+    while (atual != NULL) {
+        if (atual->esq == NULL) {
+            printf("%d ", atual->item.chave);
+            atual = atual->dir;
+        } else {
+            ARVORE_COSTURADA *predecessor = atual->esq;
+
+            while (predecessor->dir != NULL && predecessor->dir != atual) {
+                predecessor = predecessor->dir;
+            }
+
+            if (predecessor->dir == NULL) {
+                predecessor->dir = atual;
+                atual = atual->esq;
+            } else {
+                predecessor->dir = NULL;
+                printf("%d ", atual->item.chave);
+                atual = atual->dir;
+            }
+        }
+    }
+}
+/*
+Essa função utiliza o algoritmo de Morris para percorrer a árvore de forma inordenada,
+utilizando as costuras esquerda e direita para percorrer os nós em ordem.
+A ideia é que, ao chegar em um nó com costura esquerda, o algoritmo encontra o predecessor 
+desse nó (o maior elemento da subárvore esquerda) e cria uma costura direita a partir dele para 
+voltar ao nó atual posteriormente. 
+Quando encontra um nó com costura direita, o algoritmo imprime o valor do nó atual e segue para o nó da direita.
+Dessa forma, a função consegue percorrer a árvore em ordem sem utilizar uma pilha ou recursão.
+*/
 
