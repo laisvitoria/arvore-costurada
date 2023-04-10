@@ -97,4 +97,60 @@ void percorrerEmOrdem(ARVORE_COSTURADA *raiz) {
         }
     }
 }
+ARVORE_COSTURADA *alterarItem(ARVORE_COSTURADA *raiz, TIPOCHAVE chave, ITEM novoItem) {
+    ARVORE_COSTURADA *noAtual = raiz;
+    ARVORE_COSTURADA *noAnterior = NULL;
+
+    while (noAtual != NULL) {
+        if (chave < noAtual->item.chave) {
+            if (noAtual->costuraEsquerda) {
+                // Não há filho esquerdo, item não encontrado
+                return raiz;
+            } else {
+                noAnterior = noAtual;
+                noAtual = noAtual->esq;
+            }
+        } else if (chave > noAtual->item.chave) {
+            if (noAtual->costuraDireita) {
+                // Não há filho direito, item não encontrado
+                return raiz;
+            } else {
+                noAnterior = noAtual;
+                noAtual = noAtual->dir;
+            }
+        } else {
+            // Chave encontrada, altera o item e retorna a raiz da árvore
+            noAtual->item = novoItem;
+            if (noAnterior == NULL) {
+                return noAtual;
+            } else if (chave < noAnterior->item.chave) {
+                // Ajusta a costura esquerda do nó anterior
+                if (noAtual->esq == NULL) {
+                    noAtual->costuraEsquerda = true;
+                    noAtual->esq = noAnterior;
+                }
+                if (noAnterior->costuraEsquerda) {
+                    noAnterior->esq = noAtual;
+                }
+                noAnterior->costuraEsquerda = false;
+                noAnterior->esq = noAtual;
+            } else {
+                // Ajusta a costura direita do nó anterior
+                if (noAtual->dir == NULL) {
+                    noAtual->costuraDireita = true;
+                    noAtual->dir = noAnterior->dir;
+                }
+                if (noAnterior->costuraDireita) {
+                    noAnterior->dir = noAtual;
+                }
+                noAnterior->costuraDireita = false;
+                noAnterior->dir = noAtual;
+            }
+            return (noAnterior == NULL) ? noAtual : raiz;
+        }
+    }
+
+    // Chave não encontrada, não faz nada
+    return raiz;
+}
 
