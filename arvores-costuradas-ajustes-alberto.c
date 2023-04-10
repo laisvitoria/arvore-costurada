@@ -170,77 +170,42 @@ void percorrerPreOrdem(ARVORE_BINARIA *raiz) {
     percorrerPreOrdem(raiz->dir);
 }
 
-//REMOVER
-
-ARVORE_BINARIA* removerNo(ARVORE_BINARIA* raiz, TIPOCHAVE chave) {
-    if (raiz == NULL) {
-        return NULL;
-    }
-
-    ARVORE_BINARIA *atual = raiz;
-    ARVORE_BINARIA *anterior = NULL;
-    bool direita = false;
-
-    // Busca o nó a ser removido e armazena o seu nó pai e a direção da qual está sendo acessado (esquerda ou direita)
-    while (atual != NULL && atual->item.chave != chave) {
-        anterior = atual;
-        if (chave < atual->item.chave) {
-            atual = atual->esq;
-            direita = false;
-        } else {
-            atual = atual->dir;
-            direita = true;
-        }
-    }
-
-    if (atual == NULL) {
-        // Nó não encontrado
-        return raiz;
-    }
-
-    if (atual->esq == NULL && atual->dir == NULL) {
-        // Caso 1: nó sem filhos
-        if (anterior != NULL) {
-            // O nó a ser removido não é a raiz
-            if (!direita) { // se o nó estiver à esquerda do pai
-                anterior->esq = atual->esq;
-                anterior->costura = atual->costura;
-            } else { // se o nó estiver à direita do pai
-                anterior->dir = atual->dir;
+//ALTERAR item e reorganizar no
+ARVORE_BINARIA *alterar(TIPOCHAVE ch, ITEM novoItem, ARVORE_BINARIA *raiz) {
+    ARVORE_BINARIA *no = buscaAuxiliarAlterar(ch, raiz);
+    if (no != NULL) {
+        no->item = novoItem;
+        if (no->esq != NULL && no->dir != NULL) {
+            // Nó tem ambos os filhos
+            ARVORE_BINARIA *antecessor = no->esq;
+            while (antecessor->dir != NULL) {
+                antecessor = antecessor->dir;
             }
-        } else {
-            // O nó a ser removido é a raiz
-            raiz = NULL;
-        }
-        free(atual);
-    } else if (atual->esq == NULL || atual->dir == NULL) {
-        // Caso 2: nó com um filho
-        ARVORE_BINARIA *filho = atual->esq != NULL ? atual->esq : atual->dir;
-        if (anterior != NULL) {
-            // O nó a ser removido não é a raiz
-            if (!direita) { // se o nó estiver à esquerda do pai
-                anterior->esq = filho;
-                anterior->costura = atual->costura;
-            } else { // se o nó estiver à direita do pai
-                anterior->dir = filho;
+            if (antecessor->costura == NULL) {
+                no->dir = antecessor;
+                no->costura = antecessor;
+            } else {
+                no->dir = antecessor->costura;
             }
+        } else if (no->esq != NULL) {
+            // Nó tem somente filho esquerdo
+            ARVORE_BINARIA *antecessor = no->esq;
+            while (antecessor->dir != NULL) {
+                antecessor = antecessor->dir;
+            }
+            no->dir = antecessor;
+            no->costura = antecessor;
+        } else if (no->dir != NULL) {
+            // Nó tem somente filho direito
+            no->costura = no->dir;
         } else {
-            // O nó a ser removido é a raiz
-            raiz = filho;
+            // Nó não tem filhos
+            no->costura = NULL;
         }
-        free(atual);
-    } else {
-        // Caso 3: nó com dois filhos
-        ARVORE_BINARIA *sucessor = atual->dir;
-        while (sucessor->esq != NULL) {
-            sucessor = sucessor->esq;
-        }
-        atual->item = sucessor->item;
-        removerNo(raiz, sucessor->item.chave);
     }
-
     return raiz;
 }
+
 
 
 void destruirArvore(ARVORE_BINARIA *raiz) {
