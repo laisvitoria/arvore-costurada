@@ -28,3 +28,55 @@ ARVORE_COSTURADA *criarNo(ITEM item) {
     no->costuraDireita = false;
     return no;
 }
+
+ARVORE_COSTURADA *inserir(ARVORE_COSTURADA *raiz, ITEM item) {
+    ARVORE_COSTURADA *novoNo = criarNo(item);
+    ARVORE_COSTURADA *noAtual = raiz;
+    ARVORE_COSTURADA *noAnterior = NULL;
+    bool encontrouFolha = false;
+
+    if (raiz == NULL) {
+        return novoNo;
+    }
+
+    while (noAtual != NULL) {
+        noAnterior = noAtual;
+        if (item.chave < noAtual->item.chave) {
+            if (noAtual->costuraEsquerda) {
+                novoNo->esq = noAtual->esq;
+                noAtual->esq = novoNo;
+                noAtual->costuraEsquerda = false;
+                encontrouFolha = true;
+            } else {
+                noAtual = noAtual->esq;
+            }
+        } else if (item.chave > noAtual->item.chave) {
+            if (noAtual->costuraDireita) {
+                novoNo->dir = noAtual->dir;
+                noAtual->dir = novoNo;
+                noAtual->costuraDireita = false;
+                encontrouFolha = true;
+            } else {
+                noAtual = noAtual->dir;
+            }
+        } else {
+            // Chave já existe na árvore, não faz nada
+            free(novoNo);
+            return raiz;
+        }
+    }
+
+    if (!encontrouFolha) {
+        if (item.chave < noAnterior->item.chave) {
+            novoNo->costuraEsquerda = true;
+            novoNo->esq = noAnterior->esq;
+            noAnterior->esq = novoNo;
+        } else {
+            novoNo->costuraDireita = true;
+            novoNo->dir = noAnterior->dir;
+            noAnterior->dir = novoNo;
+        }
+    }
+
+    return raiz;
+}
