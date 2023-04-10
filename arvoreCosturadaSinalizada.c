@@ -80,3 +80,21 @@ ARVORE_COSTURADA *inserir(ARVORE_COSTURADA *raiz, ITEM item) {
 
     return raiz;
 }
+void percorrerEmOrdem(ARVORE_COSTURADA *raiz) {
+    ARVORE_COSTURADA *atual = raiz;
+    ARVORE_COSTURADA *anterior = NULL;
+    while (atual != NULL) {
+        if (!atual->costuraEsquerda) {
+            anterior = atual->esq;
+            while (!anterior->costuraDireita) {
+                anterior = anterior->dir;
+            }
+            printf("%d ", atual->item.chave);
+            atual = anterior->dir;
+        } else {
+            printf("%d ", atual->item.chave);
+            atual = atual->dir;
+        }
+    }
+}
+
