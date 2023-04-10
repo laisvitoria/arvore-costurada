@@ -83,12 +83,12 @@ ARVORE_BINARIA* inserirPreOrdem(ARVORE_BINARIA** raiz, ITEM item) {
 
 void buscarPreOrdem(ARVORE_BINARIA* raiz, ITEM no) {
     if (raiz == NULL) {
-        printf("Nó não encontrado %d\n", no.chave);
+        printf("No nao encontrado %d \n", no.chave);
         return;
     }
 
     if (no.chave == raiz->item.chave) {
-        printf("Nó encontrado %d\n", no.chave);
+        printf("No encontrado %d\n", no.chave);
         return;
     }
 
@@ -96,38 +96,47 @@ void buscarPreOrdem(ARVORE_BINARIA* raiz, ITEM no) {
         if (raiz->esq != NULL && (raiz->esq->costura == NULL || raiz->esq->item.chave >= no.chave)) {
             buscarPreOrdem(raiz->esq, no);
         } else {
-            printf("Nó não encontrado %d\n", no.chave);
+            printf("No nao encontrado %d \n", no.chave);
         }
     } else {
         if (raiz->dir != NULL) {
             buscarPreOrdem(raiz->dir, no);
         } else {
-            printf("Nó não encontrado %d\n", no.chave);
+            printf("No nao encontrado %d \n", no.chave);
         }
     }
 }
 
 
+//AS BUSCAS IN ORDEM E POS ORDEM NÃO ESTÃO EXIBINDO NADA QUANDO O ITEM NÃO É ENCONTRADO
 
 //É a mesma coisa que percorrer, normal igual a inserir?
+void buscarPosOrdem(ARVORE_BINARIA *raiz, ITEM no) { // agora está verificando em pós ordem
 
-
-void buscarPosOrdem(ARVORE_BINARIA* raiz, ITEM no) { //está percorrendo apenas em pré-ordem, precisa alterar o caminhamento na função
     if (raiz == NULL) {
-        printf("Nó não encontrado %d\n", no.chave);
-        return;
-    }
-
-    buscarPosOrdem(raiz->esq, no);
-    buscarPosOrdem(raiz->dir, no);
-
-    if (no.chave == raiz->item.chave) {
-        printf("Nó encontrado %d\n", no.chave);
-        return;
+      return;
+    } else {
+      buscarPosOrdem(raiz->esq, no);
+      buscarPosOrdem(raiz->dir, no);
+      if (raiz->item.chave == no.chave) {
+        printf("no encontrado %d \n", raiz->item.chave);
+      }
     }
 }
 
 //Buscar In-ordem (em aberto), se conseguir consertar buscarPosOrdem().
+
+void buscarInOrdem(ARVORE_BINARIA *raiz, ITEM no) {
+    if (raiz == NULL) {
+      return;
+    } else {
+      buscarInOrdem(raiz->esq, no);
+      if (raiz->item.chave == no.chave) {
+        printf("no encontrado %d \n", raiz->item.chave);
+      }
+      buscarInOrdem(raiz->dir, no);
+    }
+}
 
 // Percorrer em ordem
 void percorrerInOrdem(ARVORE_BINARIA *raiz) { //se colocar um numero impar no meio, a ordem muda
@@ -349,23 +358,50 @@ int main() {
     }
     ITEM item7 = { 14 };
     ITEM novo_item = { 5 };
+    printf("\nPre ordem: ");
     percorrerPreOrdem(raiz);
-    printf("\n");
+    printf("\nPos ordem: ");
+    percorrerPosOrdem(raiz);
+    printf("\nIn ordem: ");
+    percorrerInOrdem(raiz);
+
+    printf("\n\nBusca Pre Ordem \n");
     itemBuscado.chave = 1;
     buscarPreOrdem(raiz, itemBuscado);
     itemBuscado.chave = 6;
     buscarPreOrdem(raiz, itemBuscado);
     itemBuscado.chave = 8;
     buscarPreOrdem(raiz, itemBuscado);
+
+    printf("\nBusca Pos Ordem \n");
+    itemBuscado.chave = 1;
+    buscarPosOrdem(raiz, itemBuscado);
+    itemBuscado.chave = 6;
+    buscarPosOrdem(raiz, itemBuscado);
+    itemBuscado.chave = 8;
+    buscarPosOrdem(raiz, itemBuscado);
+
+    
+    printf("\nBusca In Ordem \n");
+    itemBuscado.chave = 1;
+    buscarInOrdem(raiz, itemBuscado);
+    itemBuscado.chave = 6;
+    buscarInOrdem(raiz, itemBuscado);
+    itemBuscado.chave = 8;
+    buscarInOrdem(raiz, itemBuscado);
+
+    printf("\nAltera Item \n");
     itemBuscado.chave = 9;
     alterar_item(4, itemBuscado, raiz);
     reorganizar_costura(raiz);
     //percorrerPreOrdem(raiz);
+
+    printf("\nRemove No \n");
     removerNo(raiz, 9);
+    
+    printf("\nInserir em Pre Ordem \n");
     inserirPreOrdem(&raiz, item7);
     percorrerInOrdem(raiz);
-
-  
 
     destruirArvore(raiz);
     return 0;
