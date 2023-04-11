@@ -32,7 +32,9 @@ ARVORE_COSTURADA *criar_no(TIPOCHAVE ch) {
 }
 
 /*
-Essa função recebe como parâmetro a chave do novo nó a ser criado, aloca memória para um novo nó da árvore, inicializa seus campos (a chave, os ponteiros para as subárvores esquerda e direita e as flags de costura), e retorna o endereço do novo nó criado.
+Essa função recebe como parâmetro a chave do novo nó a ser criado, aloca memória para um novo nó da árvore,
+inicializa seus campos (a chave, os ponteiros para as subárvores esquerda e direita e as flags de costura),
+e retorna o endereço do novo nó criado.
 
 Assim, basta chamar essa função sempre que for necessário criar um novo nó na sua árvore duplamente costurada.
   */
@@ -91,13 +93,17 @@ void inserir(ARVORE_COSTURADA **raiz, TIPOCHAVE ch) {
 }
 
 /*
-Essa função recebe como parâmetro um ponteiro para a raiz da árvore e a chave do novo nó a ser inserido. Ela primeiro cria um novo nó utilizando a função criar_no, e em seguida começa a percorrer a árvore procurando o lugar adequado para inseri-lo.
+Essa função recebe como parâmetro um ponteiro para a raiz da árvore e a chave do novo nó a ser inserido. 
+Ela primeiro cria um novo nó utilizando a função criar_no, e em seguida começa a percorrer a árvore procurando o lugar adequado para inseri-lo.
 
-Caso a árvore esteja vazia, o novo nó é adicionado como raiz. Caso contrário, a função percorre os nós da árvore, utilizando as flags de costura para encontrar o lugar adequado para inserir o novo nó.
+Caso a árvore esteja vazia, o novo nó é adicionado como raiz. Caso contrário,
+a função percorre os nós da árvore, utilizando as flags de costura para encontrar o lugar adequado para inserir o novo nó.
 
 Se a chave do novo nó já existe na árvore, a função simplesmente retorna, sem fazer nenhuma alteração.
 
-Se a função chegar a percorrer toda a árvore e não encontrar um lugar adequado para inserir o novo nó, isso significa que o novo nó é o maior ou o menor nó da árvore, e por isso deve ser inserido na posição devida, com a devida costura, ao lado do último nó visitado.
+Se a função chegar a percorrer toda a árvore e não encontrar um lugar adequado para inserir o novo nó,
+isso significa que o novo nó é o maior ou o menor nó da árvore, e por isso deve ser inserido na posição devida, 
+com a devida costura, ao lado do último nó visitado.
 */
 ARVORE_COSTURADA *buscar(ARVORE_COSTURADA *no, TIPOCHAVE ch) {
     while (no != NULL) {
@@ -122,7 +128,8 @@ ARVORE_COSTURADA *buscar(ARVORE_COSTURADA *no, TIPOCHAVE ch) {
 }
 
 /*
-Essa função recebe um ponteiro para um nó e a chave a ser buscada na árvore. Ela percorre a árvore seguindo a lógica do código de inserir, comparando a chave buscada com as chaves dos nós da árvore.
+Essa função recebe um ponteiro para um nó e a chave a ser buscada na árvore. 
+Ela percorre a árvore seguindo a lógica do código de inserir, comparando a chave buscada com as chaves dos nós da árvore.
   */
 void alterar_item(ARVORE_COSTURADA *no, TIPOCHAVE ch, ITEM novoItem) {
     if (no == NULL) {
@@ -160,11 +167,17 @@ void reorganizar(ARVORE_COSTURADA **raiz) {
     }
 }
 /*
-A função `alterar_item` recebe um ponteiro para o nó a ser alterado, a chave do item a ser alterado e o novo item. Ela busca o nó com a chave correspondente na árvore e, caso o encontre, atualiza o item com o novo valor.
+A função `alterar_item` recebe um ponteiro para o nó a ser alterado, 
+a chave do item a ser alterado e o novo item. 
+Ela busca o nó com a chave correspondente na árvore e, caso o encontre, atualiza o item com o novo valor.
 
-A função `reorganizar` faz a reorganização da árvore duplamente costurada, garantindo que todos os nós estejam corretamente costurados. Ela percorre a árvore da esquerda para a direita e encontra o nó mais à esquerda e o nó sucessor ao seu lado direito. Em seguida, ela vai para o próximo nó e repete o processo.
+A função `reorganizar` faz a reorganização da árvore duplamente costurada,
+garantindo que todos os nós estejam corretamente costurados. 
+Ela percorre a árvore da esquerda para a direita e encontra o nó mais à esquerda e o nó sucessor ao seu lado direito.
+Em seguida, ela vai para o próximo nó e repete o processo.
 
-Ao encontrar o nó mais à esquerda, ela verifica se esse nó já está costurado com o seu sucessor à direita. Se não estiver, ela realiza a costura e continua percorrendo a árvore.
+Ao encontrar o nó mais à esquerda, ela verifica se esse nó já está costurado com o seu sucessor à direita. 
+Se não estiver, ela realiza a costura e continua percorrendo a árvore.
 */
 void imprimir_arvore(ARVORE_COSTURADA *no) {
     if (no == NULL) {
@@ -195,7 +208,13 @@ void imprimir_arvore(ARVORE_COSTURADA *no) {
 }
 
 /*
-A função `imprimir_arvore` percorre a árvore a partir do nó mais à esquerda. Para isso, ela faz uma busca pelo nó mais à esquerda da sub-árvore atual, avançando sempre para a esquerda e seguindo as costuras. Em seguida, ela imprime todos os nós da sub-árvore a partir desse nó, avançando sempre para a direita e, quando necessário, seguindo as costuras. A função é recursiva, portanto, ela é chamada para cada sub-árvore esquerda e direita da árvore original. A impressão é feita em ordem crescente das chaves dos itens da árvore.
+A função `imprimir_arvore` percorre a árvore a partir do nó mais à esquerda.
+Para isso, ela faz uma busca pelo nó mais à esquerda da sub-árvore atual, 
+avançando sempre para a esquerda e seguindo as costuras.
+Em seguida, ela imprime todos os nós da sub-árvore a partir desse nó,
+avançando sempre para a direita e, quando necessário, seguindo as costuras. 
+A função é recursiva, portanto, ela é chamada para cada sub-árvore esquerda e direita da árvore original. 
+A impressão é feita em ordem crescente das chaves dos itens da árvore.
 */
 
 void deletar_no(ARVORE_COSTURADA **raiz, TIPOCHAVE ch) {
@@ -292,7 +311,10 @@ void deletar_no(ARVORE_COSTURADA **raiz, TIPOCHAVE ch) {
     }
 }
 /*
-A função `deletar_no` possui quatro casos diferentes, de acordo com o número de filhos do nó a ser deletado. O primeiro caso é o do nó sem filhos, em que é necessário verificar se o nó a ser deletado é a raiz ou não, e se tem costuras à esquerda e/ou à direita. Nos demais casos, é necessário ajustar as costuras da árvore quando um nó é deletado.
+A função `deletar_no` possui quatro casos diferentes, de acordo com o número de filhos do nó a ser deletado. 
+O primeiro caso é o do nó sem filhos, em que é necessário verificar se o nó a ser deletado é a raiz ou não,
+e se tem costuras à esquerda e/ou à direita.
+Nos demais casos, é necessário ajustar as costuras da árvore quando um nó é deletado.
   */
 void destruir_arvore(ARVORE_COSTURADA **raiz) {
     ARVORE_COSTURADA *atual = *raiz;
@@ -324,7 +346,11 @@ void destruir_arvore(ARVORE_COSTURADA **raiz) {
 }
 
 /*
-A função `destruir_arvore` percorre a árvore em ordem, começando pelo nó mais à esquerda da raiz. Para isso, é necessário encontrar esse nó e, a partir dele, percorrer a árvore seguindo as costuras. A cada nó percorrido, é verificado se ele tem um filho à direita e, caso tenha, é necessário deletar os nós da sub-árvore que se encontra à direita. Depois disso, é possível deletar o nó atual.
+A função `destruir_arvore` percorre a árvore em ordem, começando pelo nó mais à esquerda da raiz. 
+Para isso, é necessário encontrar esse nó e, a partir dele, percorrer a árvore seguindo as costuras.
+A cada nó percorrido, é verificado se ele tem um filho à direita e, caso tenha,
+é necessário deletar os nós da sub-árvore que se encontra à direita. 
+Depois disso, é possível deletar o nó atual.
   */
 int main() {
     ARVORE_COSTURADA *raiz = NULL;
