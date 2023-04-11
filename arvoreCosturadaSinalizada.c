@@ -196,10 +196,32 @@ para indicar que a árvore foi destruída.
 */
 
 int main() {
+    ITEM item1 = { 10 };
+    ITEM item2 = { 7 };
+    ITEM item3 = { 12 };
+    ITEM item4 = { 5 };
+    ITEM item5 = { 8 };
+    ITEM item6 = { 11 };
+    ITEM item7 = { 15 };
+
     ARVORE_COSTURADA *arvore = NULL;
-    inserir(&arvore, (ITEM) {50});
-    inserir(&arvore, (ITEM) {30});
-    inserir(&arvore, (ITEM) {70});
-    inserir(&arvore, (ITEM) {20});
-    inserir(&arvore, (ITEM) {40});
-    inserir
+
+    inserir(&arvore, item1);
+    inserir(&arvore, item2);
+    inserir(&arvore, item3);
+    inserir(&arvore, item4);
+    inserir(&arvore, item5);
+    inserir(&arvore, item6);
+    inserir(&arvore, item7);
+
+    printf("Árvore original:\n");
+    imprimir(arvore);
+    printf("\n");
+
+    alterar(&arvore, 5, item2);
+    printf("Árvore após alteração:\n");
+    imprimir(arvore);
+    printf("\n");
+
+    return 0;
+}
