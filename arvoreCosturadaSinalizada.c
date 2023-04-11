@@ -70,33 +70,24 @@ ARVORE_COSTURADA *inserir(ARVORE_COSTURADA *raiz, ITEM item) {
         if (item.chave < noAnterior->item.chave) {
             novoNo->costuraEsquerda = true;
             novoNo->esq = noAnterior->esq;
+            if (noAnterior->esq != NULL) {
+                noAnterior->esq->dir = novoNo;
+            }
             noAnterior->esq = novoNo;
         } else {
             novoNo->costuraDireita = true;
             novoNo->dir = noAnterior->dir;
+            if (noAnterior->dir != NULL) {
+                noAnterior->dir->esq = novoNo;
+            }
             noAnterior->dir = novoNo;
         }
     }
 
     return raiz;
 }
-void percorrerEmOrdem(ARVORE_COSTURADA *raiz) {
-    ARVORE_COSTURADA *atual = raiz;
-    ARVORE_COSTURADA *anterior = NULL;
-    while (atual != NULL) {
-        if (!atual->costuraEsquerda) {
-            anterior = atual->esq;
-            while (!anterior->costuraDireita) {
-                anterior = anterior->dir;
-            }
-            printf("%d ", atual->item.chave);
-            atual = anterior->dir;
-        } else {
-            printf("%d ", atual->item.chave);
-            atual = atual->dir;
-        }
-    }
-}
+
+
 ARVORE_COSTURADA *alterarItem(ARVORE_COSTURADA *raiz, TIPOCHAVE chave, ITEM novoItem) {
     ARVORE_COSTURADA *noAtual = raiz;
     ARVORE_COSTURADA *noAnterior = NULL;
@@ -121,38 +112,27 @@ ARVORE_COSTURADA *alterarItem(ARVORE_COSTURADA *raiz, TIPOCHAVE chave, ITEM novo
         } else {
             // Chave encontrada, altera o item e retorna a raiz da árvore
             noAtual->item = novoItem;
-            if (noAnterior == NULL) {
-                return noAtual;
-            } else if (chave < noAnterior->item.chave) {
-                // Ajusta a costura esquerda do nó anterior
-                if (noAtual->esq == NULL) {
-                    noAtual->costuraEsquerda = true;
-                    noAtual->esq = noAnterior;
-                }
-                if (noAnterior->costuraEsquerda) {
-                    noAnterior->esq = noAtual;
-                }
-                noAnterior->costuraEsquerda = false;
-                noAnterior->esq = noAtual;
-            } else {
-                // Ajusta a costura direita do nó anterior
-                if (noAtual->dir == NULL) {
-                    noAtual->costuraDireita = true;
-                    noAtual->dir = noAnterior->dir;
-                }
-                if (noAnterior->costuraDireita) {
-                    noAnterior->dir = noAtual;
-                }
-                noAnterior->costuraDireita = false;
-                noAnterior->dir = noAtual;
+
+            // Ajusta a costura esquerda do nó anterior, se necessário
+            if (noAtual->esq == NULL && !noAtual->costuraEsquerda && noAnterior != NULL && chave < noAnterior->item.chave) {
+                noAnterior->costuraEsquerda = true;
+                noAnterior->esq = noAtual->esq;
             }
-            return (noAnterior == NULL) ? noAtual : raiz;
+
+            // Ajusta a costura direita do nó anterior, se necessário
+            if (noAtual->dir == NULL && !noAtual->costuraDireita && noAnterior != NULL && chave > noAnterior->item.chave) {
+                noAnterior->costuraDireita = true;
+                noAnterior->dir = noAtual->dir;
+            }
+
+            return raiz;
         }
     }
 
     // Chave não encontrada, não faz nada
     return raiz;
 }
+
 void imprimir(ARVORE_COSTURADA *raiz) {
     if (raiz == NULL) {
         return;
@@ -186,78 +166,141 @@ void imprimir(ARVORE_COSTURADA *raiz) {
 ARVORE_COSTURADA *remover(ARVORE_COSTURADA *raiz, TIPOCHAVE chave) {
     ARVORE_COSTURADA *noAtual = raiz;
     ARVORE_COSTURADA *noAnterior = NULL;
-    bool encontrado = false;
 
-    // Busca o nó a ser removido
-    while (noAtual != NULL) {
+    // Localiza o nó a ser removido
+    while (noAtual != NULL && noAtual->item.chave != chave) {
+        noAnterior = noAtual;
         if (chave < noAtual->item.chave) {
-            noAnterior = noAtual;
-            noAtual = noAtual->esq;
-        } else if (chave > noAtual->item.chave) {
-            noAnterior = noAtual;
-            noAtual = noAtual->dir;
+            if (noAtual->costuraEsquerda) {
+                // Não há filho esquerdo, item não encontrado
+                return raiz;
+            } else {
+                noAtual = noAtual->esq;
+            }
         } else {
-            encontrado = true;
-            break;
+            if (noAtual->costuraDireita) {
+                // Não há filho direito, item não encontrado
+                return raiz;
+            } else {
+                noAtual = noAtual->dir;
+            }
         }
     }
 
-    if (!encontrado) {
-        // Nó não encontrado, retorna a raiz original
+    // Verifica se o nó foi encontrado
+    if (noAtual == NULL) {
         return raiz;
     }
 
-    if (noAtual->esq != NULL && noAtual->dir != NULL) {
-        // Nó a ser removido tem dois filhos
-        ARVORE_COSTURADA *noSubstituto = noAtual->esq;
-        ARVORE_COSTURADA *noAnteriorSubstituto = noAtual;
-        while (noSubstituto->dir != NULL) {
-            noAnteriorSubstituto = noSubstituto;
-            noSubstituto = noSubstituto->dir;
+    // Caso 1: o nó a ser removido é uma folha
+    if (noAtual->esq == NULL && noAtual->dir == NULL) {
+        if (noAnterior == NULL) {
+            // O nó a ser removido é a raiz da árvore
+            free(noAtual);
+            return NULL;
         }
-        noAtual->item = noSubstituto->item;
-        noAtual = noSubstituto;
-        noAnterior = noAnteriorSubstituto;
-    }
-
-    // Nó a ser removido é uma folha ou tem um filho
-    ARVORE_COSTURADA *filho = NULL;
-    if (noAtual->esq != NULL) {
-        filho = noAtual->esq;
-    } else if (noAtual->dir != NULL) {
-        filho = noAtual->dir;
-    }
-    if (noAnterior == NULL) {
-        raiz = filho;
-    } else if (noAtual == noAnterior->esq) {
-        if (filho != NULL) {
-            noAnterior->esq = filho;
-            noAtual->costuraEsquerda = true;
-        } else {
-            noAnterior->costuraEsquerda = noAtual->costuraEsquerda;
+        if (noAtual == noAnterior->esq) {
+            // O nó a ser removido é o filho esquerdo do nó anterior
+            noAnterior->costuraEsquerda = true;
             noAnterior->esq = noAtual->esq;
-        }
-    } else {
-        if (filho != NULL) {
-            noAnterior->dir = filho;
-            noSubstituto->costuraEsquerda = true;
         } else {
-            noAnterior->costuraDireita = noAtual->costuraDireita;
+            // O nó a ser removido é o filho direito do nó anterior
+            noAnterior->costuraDireita = true;
             noAnterior->dir = noAtual->dir;
         }
+        free(noAtual);
+        return raiz;
     }
 
-    free(noAtual);
+    // Caso 2: o nó a ser removido tem apenas um filho
+    if (noAtual->esq == NULL || noAtual->dir == NULL) {
+        ARVORE_COSTURADA *filho = (noAtual->esq != NULL) ? noAtual->esq : noAtual->dir;
+        if (noAnterior == NULL) {
+            // O nó a ser removido é a raiz da árvore
+            free(noAtual);
+            return filho;
+        }
+        if (noAtual == noAnterior->esq) {
+            // O nó a ser removido é o filho esquerdo do nó anterior
+            noAnterior->esq = filho;
+        } else {
+            // O nó a ser removido é o filho direito do nó anterior
+            noAnterior->dir = filho;
+        }
+        free(noAtual);
+        return raiz;
+    }
+
+    // Caso 3: o nó a ser removido tem dois filhos
+    ARVORE_COSTURADA *sucessor = noAtual->dir;
+    while (!sucessor->costuraEsquerda) {
+        sucessor = sucessor->esq;
+    }
+    noAtual->item = sucessor->item;
+    raiz = remover(raiz, sucessor->item.chave);
     return raiz;
 }
 
-/*
-Essa função utiliza o algoritmo de Morris para percorrer a árvore de forma inordenada,
-utilizando as costuras esquerda e direita para percorrer os nós em ordem.
-A ideia é que, ao chegar em um nó com costura esquerda, o algoritmo encontra o predecessor 
-desse nó (o maior elemento da subárvore esquerda) e cria uma costura direita a partir dele para 
-voltar ao nó atual posteriormente. 
-Quando encontra um nó com costura direita, o algoritmo imprime o valor do nó atual e segue para o nó da direita.
-Dessa forma, a função consegue percorrer a árvore em ordem sem utilizar uma pilha ou recursão.
-*/
 
+void destruir(ARVORE_COSTURADA *raiz) {
+    if (raiz != NULL) {
+        destruir(raiz->esq);
+        destruir(raiz->dir);
+        free(raiz);
+    }
+}
+
+int main() {
+    ARVORE_COSTURADA *raiz = NULL;
+
+    ITEM item1;
+    item1.chave = 10;
+    raiz = inserir(raiz, item1);
+
+    ITEM item2;
+    item2.chave = 5;
+    raiz = inserir(raiz, item2);
+
+    ITEM item3;
+    item3.chave = 20;
+    raiz = inserir(raiz, item3);
+
+    printf("Árvore em ordem: ");
+    imprimir(raiz);
+    printf("\n");
+
+    printf("Alteração do Item: ");
+    ITEM novoItem;
+    novoItem.chave = 9;
+    raiz = alterarItem(raiz, 5, novoItem);
+    printf("\n");
+/*
+    
+    printf("Árvore em ordem após alteração: ");
+    percorrerEmOrdem(&raiz);
+    printf("\n");
+
+    printf("Remoção de um item: ");
+    ITEM novoItem;
+    novoItem.chave = 5;
+    remover(raiz, novoItem);
+  
+    printf("Destruição");
+    destruir(raiz);
+   */
+    printf("Árvore em ordem: ");
+    imprimir(raiz);
+    printf("\n");
+
+    printf("Remoção de um item: ");
+    ITEM novoItemRemover;
+    novoItemRemover.chave = 9;
+    remover(raiz, novoItemRemover.chave);
+    printf("\n");
+
+    printf("Árvore em ordem pós-remoção: ");
+    imprimir(raiz);
+    printf("\n");
+
+    return 0;
+}
