@@ -182,6 +182,75 @@ void imprimir(ARVORE_COSTURADA *raiz) {
         }
     }
 }
+
+ARVORE_COSTURADA *remover(ARVORE_COSTURADA *raiz, TIPOCHAVE chave) {
+    ARVORE_COSTURADA *noAtual = raiz;
+    ARVORE_COSTURADA *noAnterior = NULL;
+    bool encontrado = false;
+
+    // Busca o nó a ser removido
+    while (noAtual != NULL) {
+        if (chave < noAtual->item.chave) {
+            noAnterior = noAtual;
+            noAtual = noAtual->esq;
+        } else if (chave > noAtual->item.chave) {
+            noAnterior = noAtual;
+            noAtual = noAtual->dir;
+        } else {
+            encontrado = true;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        // Nó não encontrado, retorna a raiz original
+        return raiz;
+    }
+
+    if (noAtual->esq != NULL && noAtual->dir != NULL) {
+        // Nó a ser removido tem dois filhos
+        ARVORE_COSTURADA *noSubstituto = noAtual->esq;
+        ARVORE_COSTURADA *noAnteriorSubstituto = noAtual;
+        while (noSubstituto->dir != NULL) {
+            noAnteriorSubstituto = noSubstituto;
+            noSubstituto = noSubstituto->dir;
+        }
+        noAtual->item = noSubstituto->item;
+        noAtual = noSubstituto;
+        noAnterior = noAnteriorSubstituto;
+    }
+
+    // Nó a ser removido é uma folha ou tem um filho
+    ARVORE_COSTURADA *filho = NULL;
+    if (noAtual->esq != NULL) {
+        filho = noAtual->esq;
+    } else if (noAtual->dir != NULL) {
+        filho = noAtual->dir;
+    }
+    if (noAnterior == NULL) {
+        raiz = filho;
+    } else if (noAtual == noAnterior->esq) {
+        if (filho != NULL) {
+            noAnterior->esq = filho;
+            noAtual->costuraEsquerda = true;
+        } else {
+            noAnterior->costuraEsquerda = noAtual->costuraEsquerda;
+            noAnterior->esq = noAtual->esq;
+        }
+    } else {
+        if (filho != NULL) {
+            noAnterior->dir = filho;
+            noSubstituto->costuraEsquerda = true;
+        } else {
+            noAnterior->costuraDireita = noAtual->costuraDireita;
+            noAnterior->dir = noAtual->dir;
+        }
+    }
+
+    free(noAtual);
+    return raiz;
+}
+
 /*
 Essa função utiliza o algoritmo de Morris para percorrer a árvore de forma inordenada,
 utilizando as costuras esquerda e direita para percorrer os nós em ordem.
