@@ -2,10 +2,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void alterar(ARVORE_COSTURADA **arvore, TIPOCHAVE chave, ITEM novoItem);
-void reorganizar(ARVORE_COSTURADA **arvore);
-
-
 typedef int TIPOCHAVE;
 
 typedef struct {
