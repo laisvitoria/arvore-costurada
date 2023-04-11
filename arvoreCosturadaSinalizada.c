@@ -329,38 +329,18 @@ A função `destruir_arvore` percorre a árvore em ordem, começando pelo nó ma
 int main() {
     ARVORE_COSTURADA *raiz = NULL;
 
-    // inserir nós na árvore
     inserir(&raiz, 50);
-    inserir(&raiz, 20);
-    inserir(&raiz, 60);
-    inserir(&raiz, 10);
     inserir(&raiz, 30);
-
-    // imprimir a árvore
+    inserir(&raiz, 20);
+    
+    printf("Imprimindo a árvore costurada:\n");
     imprimir_arvore(raiz);
 
-    // buscar um nó na árvore
-    ARVORE_COSTURADA *noBuscado = buscar(raiz, 20);
-    if (noBuscado != NULL) {
-        printf("Nó encontrado! Chave: %d\n", noBuscado->item.chave);
-    } else {
-        printf("Nó não encontrado!\n");
-    }
+    alterar_item(raiz, 20, (ITEM){.chave=25});
 
-    // alterar um item em um nó da árvore
-    alterar_item(raiz, 20, (ITEM) { 20 });
-
-    // imprimir a árvore novamente
+    printf("\nImprimindo a árvore costurada após alteração do item com chave 20:\n");
     imprimir_arvore(raiz);
-
-    // deletar um nó da árvore
-    deletar_no(&raiz, 20);
-
-    // imprimir a árvore novamente
-    imprimir_arvore(raiz);
-
-    // destruir a árvore
-    destruir_arvore(&raiz);
 
     return 0;
 }
+
